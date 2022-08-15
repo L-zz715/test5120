@@ -5,8 +5,8 @@ app.use(express.json())
 
 const port = 3000
 // seperate apis
-require('./routes/home')(app)
-require('./routes/uv_level')(app)
+// require('./routes/home')(app)
+// require('./routes/uv_level')(app)
 
 
 app.use('/',express.static(__dirname + '/public'))
