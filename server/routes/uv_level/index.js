@@ -3,67 +3,36 @@ module.exports = app => {
     const express = require('express')
     // child route
     const router = express.Router()
-    let mysq
-    mysq = require('../../plugins/mysq')
 
-    // start connect mysql
-    if (mysq !== "") {
-        mysq.connect()
+    const connection = require('../../plugins/connection')
 
-    }
     router.get('/monthlyUV', async (req, res) => {
-        if (mysq !== "") {
-            const sql = `select ${req.query.month} from au_uv where CITY="${req.query.city}" and STATE="${req.query.state}"`
-            mysq.query(sql, (err, result) => {
-                if (err) {
-                    console.log('err', err)
-                    res.send(err)
-                    return
+        // const sqlState = "Select * from csv_au_uv"
 
-                }
-                res.send(result)
-            })
-        }
+        const sqlState = `select ${req.query.month} from csv_au_uv where city_name="${req.query.city}" and state_name="${req.query.state}"`
+        connection.invokeQuery(sqlState, function (rows) {
 
-        res.send("none")
+            res.send({ data: rows })
+        })
+
     })
 
     router.get('/state', async (req, res) => {
-        if (mysq !== "") {
-            const sql = `select distinct STATE from au_uv`
-            mysq.query(sql, (err, result) => {
-                if (err) {
-                    console.log('err', err)
-                    res.send(err)
-                    return
 
-                }
+        const sqlState = `select distinct state_name from csv_au_uv`
+        connection.invokeQuery(sqlState, function (rows) {
 
-                console.log(typeof result)
-                res.send(result)
-            })
-        }
-
-        res.send("none")
+            res.send({ data: rows })
+        })
     })
 
     router.get('/city', async (req, res) => {
-        if (mysq !== "") {
-            const sql = `select CITY,STATE from au_uv`
-            mysq.query(sql, (err, result) => {
-                if (err) {
-                    console.log('err', err)
-                    res.send(err)
-                    return
 
-                }
+        const sqlState = `select city_name,state_name from csv_au_uv`
+        connection.invokeQuery(sqlState, function (rows) {
 
-                console.log(typeof result)
-                res.send(result)
-            })
-        }
-
-        res.send("none")
+            res.send({ data: rows })
+        })
     })
 
     //here use this url to connect api http://localhost:3000/home/api/ttc
